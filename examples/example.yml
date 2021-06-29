@@ -1,0 +1,47 @@
+---
+areas:
+  - id: IILAB-fasten
+    robots:
+      - friday
+
+robots:
+  - id: friday
+    ros: noetic
+    images:
+      - ros-development
+    packages:
+      - rosbridge
+      - universal_robot
+    vars:
+      - UR_VERSION: 10
+      - ROSBRIDGE_PORT: 9091
+
+images:
+  - id: ros-development
+    image: ros
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./ros_workspace:/ros_workspace
+
+packages:
+  - id: universal_robot
+    path: ./packages/
+    git:
+      - https://github.com/ros-industrial/universal_robot:{{ROBOT_ROS_DISTRO}}-devel
+    command: "roslaunch ur_gazebo ur{{UR_VERSION}}.launch gui:=false"
+
+  - id: rosbridge
+    path: ./packages/
+    apt:
+      - ros-{{ROBOT_ROS_DISTRO}}-rosbridge-server
+      - ros-{{ROBOT_ROS_DISTRO}}-tf
+    ports:
+      - "{{ROSBRIDGE_PORT}}:{{ROSBRIDGE_PORT}}"
+    command: "roslaunch rosbridge_server rosbridge_websocket.launch port:={{ROSBRIDGE_PORT}}"
+
+globals:
+  - id: webviz
+    image: cruise/webviz
+    ports:
+      - "8081:8080"

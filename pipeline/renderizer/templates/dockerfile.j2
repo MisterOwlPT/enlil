@@ -1,0 +1,58 @@
+{% if package.rosinstall is defined or package.git_cmds is defined %}
+FROM ros:{{ package.ros }} as intermediate
+RUN apt update \
+    && apt -y install \
+        git \
+        ssh \
+    && mkdir -p /ros_workspace/src/
+{% if package.ssh -%}
+COPY ssh/ /root/.ssh
+RUN chmod 600 /root/.ssh/* \
+    && touch /root/.ssh/known_hosts \
+    && hosts=$(grep 'HostName' /root/.ssh/config | sed -e 's/\<HostName\>//g' | sed -e 's/^[[:space:]]*//') \
+    && for host in $hosts; do ssh-keyscan $host >> /root/.ssh/known_hosts; done
+{%- endif %}
+{% if package.git_cmds is defined -%}
+{%- for git_cmd in package.git_cmds -%}
+RUN {{ git_cmd }}
+{% endfor -%}
+{%- endif %}
+{% if package.rosinstall is defined %}
+COPY .rosinstall /ros_workspace/src/.rosinstall
+WORKDIR /ros_workspace/
+RUN wstool update -t src
+{% endif %}
+{% endif -%}
+FROM ros:{{ package.ros }}
+{% if package.rosinstall is defined or package.git_cmds is defined %}
+COPY --from=intermediate /ros_workspace/src /ros_workspace/src/
+{% endif %}
+RUN apt-get update && apt-get install -y --no-install-recommends \ 
+{%- if package.apt is defined %}
+{%- for entry in package.apt %}
+    {{ entry }} \
+{%- endfor %}
+{%- endif %}
+{%- if package.rosinstall is defined or package.git_cmds is defined %}
+    git \
+    python3-pip \
+    python3-apt \
+    && pip3 install -U setuptools \
+    && pip3 install -U colcon-common-extensions \
+    && mkdir -p /ros_workspace/src/ \
+{%- endif %}
+    && echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> .bashrc \
+    && echo "export PATH=$PATH:/root/.local/bin" >> .bashrc
+{% if package.rosinstall is defined or package.git_cmds is defined %}
+RUN /bin/bash -c '. /opt/ros/{{ package.ros }}/setup.bash \
+    && cd /ros_workspace \
+    && rosdep install --from-paths src --ignore-src -r -y \
+    && colcon build \
+    && rospack profile \
+    && echo "source /ros_workspace/install/setup.bash" >> /root/.bashrc'
+{%- endif %}
+{%- if package.rosinstall is defined or package.git_cmds is defined %}
+CMD /bin/bash -c "source /ros_workspace/install/setup.bash && {{ package.command }}"
+{%- else %}
+CMD /bin/bash -c "{{ package.command }}"
+{%- endif %}

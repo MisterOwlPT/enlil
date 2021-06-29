@@ -1,0 +1,52 @@
+version: '3.4'
+
+services:
+
+  # DNS Server:
+  # Allows the host to easily access all containers by their id.
+  # Allows all containers within a same Docker private network
+  # to communicate with each other using the same mechanism. 
+  docker-hoster:
+    container_name: docker-hoster
+    image: dvdarias/docker-hoster
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/hosts:/tmp/hosts
+    networks:
+    {%- for area in areas %}
+      - {{ area.id }}-network
+    {%- endfor -%}
+
+{%- for image in stringified_global_images %}
+{{ image }}
+{%- endfor %}
+
+{%- for robot in stringified_robots %}
+{{ robot }}
+{%- endfor %}
+
+{%- for image in stringified_images %}
+{{ image }}
+{%- endfor %}
+
+{%- for package in stringified_packages %}
+{{ package }}
+{%- endfor %}
+
+networks:
+{%- for area in areas %}
+  {{ area.id }}-network:
+    driver: bridge
+{%- endfor %}
+{%- for network in networks %}
+  {{ network }}:
+    driver: bridge
+{%- endfor %}
+
+{%- if labeled_volumes -%}
+volumes:
+{%- for volume in labeled_volumes %}
+  {{ volume }}:
+{%- endfor -%}
+{%- endif -%}
