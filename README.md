@@ -110,7 +110,6 @@ areas:
 robots:
   - id: friday
     ros: melodic
-    port: 11311
     images:
       - ros-development
     packages:
