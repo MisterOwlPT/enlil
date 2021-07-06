@@ -6,7 +6,7 @@ areas:
 
 robots:
   - id: friday
-    ros: noetic
+    ros: melodic
     images:
       - ros-development
     packages:
