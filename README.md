@@ -149,6 +149,8 @@ globals:
     ports:
       - "8081:8080"
 ```
+![Demo](./docs/images/enlil.gif)
+
 ## **Generation Pipeline**
 
 Enlil divides input data into *five distinct types* of **entities**:
