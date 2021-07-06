@@ -20,7 +20,7 @@ def main():
     config_file = arguments['<configuration_file>']
     output_file = arguments['<output_file>']
     if not output_file:  # by default output file goes to current directory
-        output_file = './docker_compose.yml'
+        output_file = './docker-compose.yml'
 
     # Verify is specified configuration file exists
     if not path.isfile(config_file):
