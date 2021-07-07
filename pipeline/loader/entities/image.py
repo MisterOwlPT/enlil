@@ -26,6 +26,7 @@ class Image:
     # WARNING: if adding more required fields ensure that field "id" is always the first.
     required_fields = ['id', 'image']
 
+    # flake8: noqa: C901
     def __parse_yaml_data(self, yaml_data, robot):
         """Parses the YAML data for a given entity of type "Image".
 

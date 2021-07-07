@@ -58,6 +58,7 @@ class EntityLoader():
         self._load_data(configuration_file_path)
 
     # Load all entities
+    # flake8: noqa: C901
     def _load_data(self, configuration_file_path):
         """Loads the contents of an YAML configuration input file.
 
@@ -128,6 +129,7 @@ class EntityLoader():
             self.areas[area.id] = area
 
     # Load an entity of type 'Robot'
+    # flake8: noqa: C901
     def _add_entity_robot(self, yaml_data, area):
         """Loads a new entity of type "Robot".
 

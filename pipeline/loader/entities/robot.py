@@ -32,6 +32,7 @@ class Robot:
     # in inside function "__parse_yaml_data". Therefore don't add such fields to this list.
     required_fields = ['id', 'ros']
 
+    # flake8: noqa: C901
     def __parse_yaml_data(self, yaml_data):
         """Parses the YAML data for a given entity of type "Robot".
 

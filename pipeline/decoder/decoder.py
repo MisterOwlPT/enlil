@@ -193,6 +193,7 @@ class Decoder():
             robot = self.robots[robot_id]
             self.__decode_robot(robot)
 
+    # flake8: noqa: C901
     def __decode_robot(self, robot):
         """Decode the YAML data of a single entity of type "Robot".
 
