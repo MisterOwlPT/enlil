@@ -1,4 +1,4 @@
-name: Lint, Test and Deploy Enlil
+name: CI
 
 on: [push]
 
