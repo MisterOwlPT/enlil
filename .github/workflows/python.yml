@@ -1,4 +1,4 @@
-name: Lint and Test Python
+name: Lint, Test and Deploy Enlil
 
 on: [push]
 
