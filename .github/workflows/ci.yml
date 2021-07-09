@@ -32,7 +32,6 @@ jobs:
           coverage run -m unittest discover -s ./tests/
       - name: Upload Coverage to Codecov
         uses: codecov/codecov-action@v1
-        with:      
 
   deploy:
     runs-on: ubuntu-latest
