@@ -1,6 +1,6 @@
 # **Enlil**
 
-[![CI](https://github.com/MisterOwlPT/enlil/actions/workflows/python.yml/badge.svg)](https://github.com/MisterOwlPT/enlil/actions/workflows/python.yml)
+[![CI](https://github.com/MisterOwlPT/enlil/actions/workflows/ci.yml/badge.svg)](https://github.com/MisterOwlPT/enlil/actions/workflows/ci.yml)
 
 Enlil is a solution to ease and speed up the containerization of entire robotic infrastructures with _ROS_.
 Enlil does so by automatically generating all files required by _Docker Compose_ in order to both containerize and simultaneously orchestrate multiple _ROS_ workspaces.
