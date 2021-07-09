@@ -81,3 +81,6 @@ ignore log files someone is creating
 #ignore Python build related
 dist/
 *.egg-info/
+
+#coverage files
+.coverage
