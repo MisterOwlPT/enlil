@@ -27,7 +27,7 @@ with open('./README.md', 'r') as readme:
 
 setuptools.setup(
     name='enlil',
-    version='1.1.1',
+    version='1.1.2',
     author='Pedro Melo, Rafael Arrais',
     author_email='pedro.m.melo@inesctec.pt, rafael.l.arrais@inesctec.pt',
     description='Automatic containerization of complete ROS workspaces.',

@@ -174,7 +174,7 @@ class Renderizer:
 
         for field, value in yaml_data.items():
 
-            if field not in ['apt', 'command', 'git', 'git_cmds', 'ros', 'tag', 'vars']:
+            if field not in ['apt', 'command', 'git', 'git_cmds', 'ros', 'ssh', 'tag', 'vars']:
 
                 type_data = type(value)
 
