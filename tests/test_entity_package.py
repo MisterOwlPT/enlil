@@ -259,6 +259,37 @@ class TestEntityPackage(unittest.TestCase):
         package = Package(yaml_data, self.__robot_ros2)
         self.assertEqual(package.yaml_data['restart'], yaml_data['restart'])
 
+    def test_ssh_empty(self):
+        """ Test if execution finishes if field "ssh" is declared empty
+        """
+        yaml_data = {'id': 'dummy_package', 'path': 'dummy_path', 'command': 'dummy_command', 'git': ['dummy_repo'], 'ssh': []}
+        with self.assertRaises(SystemExit) as exception:
+            Package(yaml_data, self.__robot_ros2)
+        self.assertEqual(exception.exception.code, 1)
+
+    def test_ssh_not_list(self):
+        """ Test if execution finishes if field "ssh" is not a list.
+        """
+        yaml_data = {'id': 'dummy_package', 'path': 'dummy_path', 'command': 'dummy_command', 'git': ['dummy_repo'], 'ssh': 'random_path'}
+        with self.assertRaises(SystemExit) as exception:
+            Package(yaml_data, self.__robot_ros2)
+        self.assertEqual(exception.exception.code, 1)
+
+    def test_ssh_not_list_of_files(self):
+        """ Test if execution finishes if field "ssh" is not a list of files.
+        """
+        yaml_data = {'id': 'dummy_package', 'path': 'dummy_path', 'command': 'dummy_command', 'git': ['dummy_repo'], 'ssh': [[], 'dummy']}
+        with self.assertRaises(SystemExit) as exception:
+            Package(yaml_data, self.__robot_ros2)
+        self.assertEqual(exception.exception.code, 1)
+
+    def test_ssh_value_set(self):
+        """ Test if field "ssh" is properly set when defined.
+        """
+        yaml_data = {'id': 'dummy_package', 'path': 'dummy_path', 'command': 'dummy_command', 'git': ['dummy_repo'], 'ssh': ['random_path']}
+        package = Package(yaml_data, self.__robot_ros2)
+        self.assertEqual(package.yaml_data['ssh'], yaml_data['ssh'])
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -21,6 +21,7 @@
 # THE SOFTWARE.
 
 import sys
+from distutils.util import strtobool
 
 
 class Package:
@@ -117,6 +118,22 @@ class Package:
             if not self.yaml_data['rosinstall']:
                 print(f'Package "{self.id}" was declared with an empty value for "rosinstall"')
                 sys.exit(1)
+
+        # Ensure that field "ssh" is not empty 
+        # Ensure that field "ssh" if a list of files
+        if 'ssh' in self.yaml_data:
+            if not self.yaml_data['ssh']:
+                print(f'Package "{self.id}" was declared with an empty value for "ssh"')
+                sys.exit(1)
+
+            if not isinstance(self.yaml_data['ssh'], list):
+                print(f'Field "ssh" of package "{self.id}" is not of type list')
+                sys.exit(1)
+
+            for filename in self.yaml_data['ssh']:
+                if not isinstance(filename, str):
+                    print(f'Field "ssh" of package "{self.id}" is not a list of files')
+                    sys.exit(1)
 
         # Process declared environmental variables.
         # Add default environmental variables based on ROS version of the passed robot.
