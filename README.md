@@ -75,7 +75,7 @@ enlil <ARGUMENTS>
 You can install Enlil directly through _pip_:
 
 ```sh
-pip3 install --index-url https://__token__:<PERSONAL_ACCESS_TOKEN>@gitlab.inesctec.pt/api/v4/projects/3174/packages/pypi/simple enlil
+pip3 install enlil
 ```
 
 You may now be able to run Enlil with:
