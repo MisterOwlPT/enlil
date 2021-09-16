@@ -22,6 +22,7 @@
 
 import os
 import shutil
+import sys
 from jinja2 import Template
 from pkg_resources import resource_string
 
@@ -286,8 +287,12 @@ class Renderizer:
                 ssh_folder = f'{packages_path}/{package["id"]}/ssh/'
                 self._create_folder(ssh_folder)
                 for ssh_path in package['ssh']:
-                    file_name = ssh_path.split('/')[-1]
-                    shutil.copyfile(ssh_path, ssh_folder + file_name)
+                    try:
+                        file_name = ssh_path.split('/')[-1]
+                        shutil.copyfile(ssh_path, ssh_folder + file_name)
+                    except FileNotFoundError:
+                        print(f'SSH file "{ssh_path}" was not found.')
+                        sys.exit(1)
 
             # Render Dockerfile for each package
             with open(f'{packages_path}/{package["id"]}/Dockerfile', 'w+') as out:
