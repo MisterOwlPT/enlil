@@ -274,6 +274,7 @@ Important considerations:
 | ```id```         	| the _package_'s unique identifier                                                 	| yes                                                          	|
 | ```path```       	| the output path for the _package_'s _Dockerfile_                                  	| yes                                                          	|
 | ```rosinstall``` 	| path to a _.rosinstall_ file listing code dependencies to be installed            	| yes (but only if neither _git_ or _apt_ are declared)        	|
+| ```ssh``` 	      | list of complete file paths required to install private code dependencies           | no                                                          	|
 
 Important considerations:
 
