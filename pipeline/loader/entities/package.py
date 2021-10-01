@@ -100,10 +100,11 @@ class Package:
                     git_cmds.append(f"git -C /ros_workspace/src clone -b {parts[-1]} {':'.join(parts[:-1])}")
             self.yaml_data['git_cmds'] = git_cmds
 
+        declared_fields = set(list(self.yaml_data.keys()))
+
         # Ensure that at least one of the fields "apt", "git" or "rosinstall" was selected.
         # There is no point in declaring an entity of this type if no ROS package is to be caontainerized.
         # NOTE: For "empty" containers entities of type "image" should be used instead.
-        declared_fields = set(list(self.yaml_data.keys()))
         if not [field for field in ['apt', 'git', 'rosinstall'] if field in declared_fields]:
             print(f'Package "{self.id}" was declared without any ROS package.')
             sys.exit(1)
@@ -119,7 +120,24 @@ class Package:
                 print(f'Package "{self.id}" was declared with an empty value for "rosinstall"')
                 sys.exit(1)
 
-        # Ensure that field "ssh" is not empty 
+        # Ensure that field "files" is not empty, if selected 
+        # Ensure that field "files" if a list of files
+        if 'files' in self.yaml_data:
+            
+            if not self.yaml_data['files']:
+                print(f'Package "{self.id}" was declared with an empty value for "files"')
+                sys.exit(1)
+
+            if not isinstance(self.yaml_data['files'], list):
+                print(f'Field "files" of package "{self.id}" is not of type list')
+                sys.exit(1)
+
+            for filename in self.yaml_data['files']:
+                if not isinstance(filename, str):
+                    print(f'Field "files" of package "{self.id}" is not a list of files')
+                    sys.exit(1)
+
+        # Ensure that field "ssh" is not empty, if selected
         # Ensure that field "ssh" if a list of files
         if 'ssh' in self.yaml_data:
             if not self.yaml_data['ssh']:

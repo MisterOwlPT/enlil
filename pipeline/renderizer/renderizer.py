@@ -174,7 +174,7 @@ class Renderizer:
 
         for field, value in yaml_data.items():
 
-            if field not in ['apt', 'command', 'git', 'git_cmds', 'ros', 'ssh', 'tag', 'vars']:
+            if field not in ['apt', 'command', 'files', 'git', 'git_cmds', 'ros', 'ssh', 'tag', 'vars']:
 
                 type_data = type(value)
 
@@ -251,23 +251,6 @@ class Renderizer:
         """  Renders the final Docker Compose YAMl file as well as all required Dockerfiles.
         """
 
-        # Open template of Docker Compose YAML file.
-        compose_yaml_template = resource_string(__name__, 'templates/docker_compose.j2').decode('utf-8')
-        compose_yaml_templater = Template(compose_yaml_template)
-
-        # Render final Docker Compose YAML file
-        with open(self.output_file_path, 'w+') as output_file:
-            output_file.write(compose_yaml_templater.render(
-                areas=self.areas,
-                direct_volumes=self.direct_volumes,
-                labeled_volumes=self.labeled_volumes,
-                networks=self.networks,
-                stringified_global_images=[self.__stringify_service(image) for image in self.global_images],
-                stringified_images=[self.__stringify_service(image) for image in self.images],
-                stringified_packages=[self.__stringify_service(package) for package in self.packages],
-                stringified_robots=[self.__stringify_service_robot(robot) for robot in self.robots]
-            ))
-
         # Open template of Dockerfile.
         dockerfile_template = resource_string(__name__, 'templates/dockerfile.j2').decode('utf-8')
         dockerfile_templater = Template(dockerfile_template)
@@ -294,6 +277,55 @@ class Renderizer:
                         print(f'SSH file "{ssh_path}" was not found.')
                         sys.exit(1)
 
+            if 'files' in package:
+
+                # Create folder for files if specified.
+                files_folder = f'{packages_path}/{package["id"]}/files/'
+                self._create_folder(files_folder)
+
+                if 'volumes' in package:
+                    volumes = package["volumes"]
+                else:
+                    volumes = []
+
+                for file_path in package['files']:
+
+                    try:
+                        external_file_path, internal_file_path = file_path.split(':')
+                    except ValueError:
+                        print(f'Invalid file declaration "{file_path}"')
+                        sys.exit(1)
+
+                    try:
+                        # Make a copy of the file
+                        file_name = external_file_path.strip().split('/')[-1]
+                        shutil.copyfile(external_file_path, files_folder + file_name)
+                    except FileNotFoundError as e:
+                        print(f'File "{external_file_path}" was not found.')
+                        sys.exit(1)
+
+                    # Create a volume for the copied file
+                    volumes.append(f"{files_folder + file_name}:{internal_file_path}")
+
+                package["volumes"] = volumes
+
             # Render Dockerfile for each package
             with open(f'{packages_path}/{package["id"]}/Dockerfile', 'w+') as out:
                 out.write(dockerfile_templater.render(package=package))
+
+        # Open template of Docker Compose YAML file.
+        compose_yaml_template = resource_string(__name__, 'templates/docker_compose.j2').decode('utf-8')
+        compose_yaml_templater = Template(compose_yaml_template)
+
+        # Render final Docker Compose YAML file
+        with open(self.output_file_path, 'w+') as output_file:
+            output_file.write(compose_yaml_templater.render(
+                areas=self.areas,
+                direct_volumes=self.direct_volumes,
+                labeled_volumes=self.labeled_volumes,
+                networks=self.networks,
+                stringified_global_images=[self.__stringify_service(image) for image in self.global_images],
+                stringified_images=[self.__stringify_service(image) for image in self.images],
+                stringified_packages=[self.__stringify_service(package) for package in self.packages],
+                stringified_robots=[self.__stringify_service_robot(robot) for robot in self.robots]
+            ))
