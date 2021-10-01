@@ -270,7 +270,8 @@ Important considerations:
 |------------	|-----------------------------------------------------------------------------------	|--------------------------------------------------------------	|
 | ```apt```        	| list of required software modules to be installed via the inbuilt package manager 	| yes (but only if neither _git_ or _rosinstall_ are declared) 	|
 | ```command```    	| the command to be run after the _Docker_ container is initialized                 	| yes                                                          	|
-| ```git```        	| list of _URL_s for required _git_ repositories                                    	| yes (but only if neither _apt_ or _rosinstall_ are declared) 	|
+| ```fields```    	| list of complete file paths required inside the final container                     | no                                                          	|
+| ```git```        	| list of *URL*s for required _git_ repositories                                    	| yes (but only if neither _apt_ or _rosinstall_ are declared) 	|
 | ```id```         	| the _package_'s unique identifier                                                 	| yes                                                          	|
 | ```path```       	| the output path for the _package_'s _Dockerfile_                                  	| yes                                                          	|
 | ```rosinstall``` 	| path to a _.rosinstall_ file listing code dependencies to be installed            	| yes (but only if neither _git_ or _apt_ are declared)        	|
